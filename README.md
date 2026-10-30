@@ -31,7 +31,20 @@ The two writers do not conflict:
 - `export.py` on the main machine first runs `git pull --rebase` from `origin main`. It copies the merged changes to `authored/` and `vendored/` into `~/.claude`, then exports. So a merged sync PR is not undone, and the push is not rejected.
 - `export.py` stops on a machine where `link.py` ran. Do not run it there.
 - Merge sync PRs soon. Until you merge it, a PR that changes `authored/` or `vendored/` can conflict with the next export.
-- Sync is manual. Nothing in this repo schedules `sync.sh`. `install.sh` (below) is an optional launchd agent for the Mac export only.
+- No schedules. A full `./sync.sh` (pull, restore, link) runs only by hand. `install.sh` (below) is an optional launchd agent, and it runs only the Mac export.
+
+### Hooks: record local changes when a session ends `readme.hooks`
+
+`bin/install-hooks.sh` adds `bin/skill-sync-hook.sh` to Claude Code `SessionEnd` (`~/.claude/settings.json`) and to Cursor `stop` and `sessionEnd` (`~/.cursor/hooks.json`). Run it again at any time; each run gives the same result. `--uninstall` removes the hooks. mr calls the same hook at run start and after `_finalize`.
+
+1. The hook does a dirty check, which takes about 15 ms. It looks for a real folder in `~/.claude/skills`, a real file in `~/.claude/commands`, a change in the clone, or an earlier record that did not finish. If it finds none, it stops.
+2. If it finds a change, it starts `./sync.sh --record` in the background with `setsid`, because `claude -p` kills hook child processes when it exits.
+3. `--record` runs `link.py` and commits to the sync branch. It then runs gitleaks, pushes and opens or updates the PR. It does not pull or run `restore.sh`.
+4. The hook writes nothing to stdout and always exits 0, so it never blocks a session. It never calls a model and never runs `export.py`.
+5. In an agent that mr starts, pushes are blocked. There the hook only marks the change as pending. mr's own process then records it.
+6. A new `npx skills add` goes to `sources.json` (source + skillPath). This makes it reach GitHub and other machines.
+
+Log: `~/.local/state/skill-sync/sync.log`. Turn the hook off for one command with `SKILL_SYNC_DISABLE=1`. To commit without a push, set `SYNC_NO_PUSH=1`. A `.sync-branch` file, which is not committed, sets the branch (for example the branch of an open PR). A full sync deletes the file after that PR is closed.
 
 To add a skill from a public repo, add it to `sources.json` (`readme.sources`). To add a skill you write on an other machine, create `~/.claude/skills/<name>/SKILL.md` and run `./sync.sh`. On the main machine, create the skill as before; the export finds it.
 
