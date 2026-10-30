@@ -31,6 +31,8 @@ CLAUDE = HOME / ".claude"
 AGENTS = HOME / ".agents"
 REPO = Path(__file__).resolve().parent
 OVERRIDES = REPO / "overrides.json"
+SOURCES = REPO / "sources.json"  # skills declared by hand, kept even when this machine lacks them
+EXTRA = REPO / "extra/skills"  # copies of declared skills whose upstream is gone
 UPSTREAM_CACHE = REPO / ".cache/upstream.json"
 ANTHROPIC_SKILLS = "anthropics/skills"
 GENERATED = ["authored", "vendored", "manifest.json", "INDEX.md", "restore.sh"]
@@ -88,8 +90,10 @@ def collect():
     if lock_file.exists():
         lock = json.loads(lock_file.read_text())["skills"]
     overrides = json.loads(OVERRIDES.read_text()) if OVERRIDES.exists() else {}
+    sources = {k: v for k, v in (json.loads(SOURCES.read_text()) if SOURCES.exists() else {}).items()
+               if not k.startswith("_") and k not in overrides}
     by_hash, by_name = plugin_skill_index()
-    upstream = upstream_check(lock)
+    upstream = upstream_check(lock | {k: v for k, v in sources.items() if "source" in v})
 
     # gather candidate skill paths: ~/.claude/skills first, then ~/.agents/skills not linked into it
     # (a same-name copy in ~/.agents/skills is the same skill installed for other agents)
@@ -98,7 +102,7 @@ def collect():
         if not root.exists():
             continue
         for p in sorted(root.iterdir()):
-            if p.name == "synced" or p.name.startswith(".") or p.name in seen:
+            if p.name == "synced" or p.name.startswith(".") or p.name in seen or p.name in sources:
                 continue
             seen.add(p.name)
             cands.append({"name": p.name, "path": p, "real": p.resolve(), "linked": root == CLAUDE / "skills"})
@@ -152,6 +156,8 @@ def collect():
         e["_real"] = real
         entries.append(e)
 
+    entries += declared(sources, upstream)
+
     for e in pending:
         by = batch(mtimes[e["name"]])
         if by:
@@ -182,6 +188,25 @@ def collect():
             a["public_in"] = ANTHROPIC_SKILLS
             a["evidence"] += f"; public in {ANTHROPIC_SKILLS}"
     return entries + acct
+
+
+def declared(sources: dict, upstream: dict) -> list:
+    """sources.json entries: the same result on every machine, whether or not the skill is installed here."""
+    out = []
+    for name, s in sorted(sources.items()):
+        e = {"name": name, "kind": "skill", "path": "sources.json", "linked_to_claude": True,
+             "description": s.get("description", "")}
+        if "source" in s:
+            e |= cls("cli", f"declared in sources.json from {s['source']}" + (f"; {s['note']}" if s.get("note") else ""))
+            e["source"], e["skill_path"] = s["source"], s.get("skillPath")
+            if upstream.get(upstream_url(s["source"], s.get("skillPath"))) is False:
+                e["evidence"] += f"; warning: upstream no longer has {s.get('skillPath')}"
+        else:
+            e |= cls("vendored", f"declared in sources.json, copy in extra/skills; from {s.get('vendored_from')}"
+                     + (f"; {s['note']}" if s.get("note") else ""))
+            e["_real"] = EXTRA / name
+        out.append(e)
+    return out
 
 
 def cls(c, evidence):

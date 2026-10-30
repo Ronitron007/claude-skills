@@ -43,6 +43,8 @@ The script applies these rules in this order. The first rule that matches sets t
 
 1. If `overrides.json` names the skill, the script uses that class.
 
+   Then, if `sources.json` names the skill, the script uses that entry. See `readme.sources`.
+
 2. If the folder has no `SKILL.md`, the class is junk.
 
 3. If `~/.agents/.skill-lock.json` has the skill, the class is cli. But if the GitHub source does not have the skill now, the class is vendored.
@@ -68,6 +70,18 @@ The source check in rule 3 sends one request for each skill to GitHub. The scrip
 2. Add the skill name and the correct class, for example `{"supabase-edge-functions": "vendored"}`.
 
 3. Run `python3 export.py`.
+
+## Skills from other machines `readme.sources`
+
+The export reads only the machine that runs it. To keep a skill that is on another machine, add it to `sources.json`. The script keeps each entry on every machine, also when the skill is not installed there.
+
+1. For a skill with a public source, add the source and the path, for example `{"eas-update": {"source": "https://github.com/expo/skills.git", "skillPath": "plugins/expo/skills/eas-update/SKILL.md"}}`. The class is cli. `restore.sh` installs the skill with `npx skills add`.
+
+2. For a skill without a source, put a copy in `extra/skills/<name>` and add `{"<name>": {"vendored_from": "<url>"}}`. The class is vendored.
+
+3. Run `python3 export.py` on the main machine.
+
+Do not run `export.py` on a second machine. It rebuilds the export from that machine only, so it removes the skills that are only on the main machine.
 
 ## Automatic updates `readme.auto`
 

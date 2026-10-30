@@ -1,0 +1,93 @@
+{
+  "_comment": "Skills declared by hand (e.g. from the box's /home/box/shared-skills). export.py keeps these on every machine. 'source'+'skillPath' = reinstall with npx skills; 'vendored_from' = copy kept in extra/skills/<name> because upstream dropped it.",
+  "eas-update": {
+    "source": "https://github.com/expo/skills.git",
+    "skillPath": "plugins/expo/skills/eas-update/SKILL.md",
+    "description": "Configure and use EAS Update for over-the-air JavaScript and asset updates with expo-updates and EAS CLI. Use when setting up OTA updates, running eas update:configure or eas update, publishing to preview/staging/production channels, explaining branches/channels/runtime versions, testing updates, or debugging why an installed build still shows old code. Load for TestFlight, preview, or production updates that do not appear, including questions about cold launches or reopening the app. Not for update health metrics; use eas-update-insights for adoption, crashes, and rollout monitoring.",
+    "note": "box shared-skills, picked for kyaloon-app (Expo)"
+  },
+  "eas-workflows": {
+    "source": "https://github.com/expo/skills.git",
+    "skillPath": "plugins/expo/skills/eas-workflows/SKILL.md",
+    "description": "Helps understand and write EAS workflow YAML files for Expo projects. Use this skill when the user asks about CI/CD or workflows in an Expo or EAS context, mentions .eas/workflows/, or wants help with EAS build pipelines or deployment automation.",
+    "note": "box shared-skills, picked for kyaloon-app (Expo)"
+  },
+  "expo-data-fetching": {
+    "source": "https://github.com/expo/skills.git",
+    "skillPath": "plugins/expo/skills/expo-data-fetching/SKILL.md",
+    "description": "Use when implementing or debugging ANY network request, API call, or data fetching. Covers fetch API, React Query, SWR, error handling, caching, offline support, loading/empty/error screen states, and Expo Router data loaders (`useLoaderData`).",
+    "note": "box shared-skills, picked for kyaloon-app (Expo)"
+  },
+  "expo-design-system": {
+    "source": "https://github.com/expo/skills.git",
+    "skillPath": "plugins/expo/skills/expo-design-system/SKILL.md",
+    "description": "Build and maintain a design system inside an Expo app - a reusable theme of design tokens (color, spacing, typography, radius, shadow, motion), reusable component structure with variant/size/state prop conventions, and rules for when to extract a repeated view into a shared component. Use when creating or organizing theme files and design tokens (theme.ts / theme/), extending an existing theme or styling library (NativeWind, Tamagui, Restyle, Unistyles) in its own idiom, standardizing styles so screens (including AI-generated ones) look consistent and polished, fixing an app that looks AI-generated or generic instead of native (the named native-slop tells), building an in-app component library, or auditing an app for design-system drift (hardcoded colors, spacing, fonts). For platform styling specifics (semantic colors, HIG rules, native controls) use expo-native-ui; for folder layout of a new app use expo-project-structure.",
+    "note": "box shared-skills, picked for kyaloon-app (Expo)"
+  },
+  "expo-router": {
+    "source": "https://github.com/expo/skills.git",
+    "skillPath": "plugins/expo/skills/expo-router/SKILL.md",
+    "description": "Navigation and routing for Expo Router. Covers file-based routes, groups and dynamic routes, folder organization, Link with previews and context menus, native Stack, page titles, modals and form sheets, NativeTabs, headers and toolbars, and header search bars.",
+    "note": "box shared-skills, picked for kyaloon-app (Expo)"
+  },
+  "expo-upgrade": {
+    "source": "https://github.com/expo/skills.git",
+    "skillPath": "plugins/expo/skills/expo-upgrade/SKILL.md",
+    "description": "Guidelines for upgrading Expo SDK versions and fixing dependency issues",
+    "note": "box shared-skills, picked for kyaloon-app (Expo)"
+  },
+  "grill-me": {
+    "source": "https://github.com/mattpocock/skills.git",
+    "skillPath": "skills/productivity/grill-me/SKILL.md",
+    "description": "A relentless interview to sharpen a plan or design.",
+    "note": "box shared-skills, slash-only spec loop"
+  },
+  "grilling": {
+    "source": "https://github.com/mattpocock/skills.git",
+    "skillPath": "skills/productivity/grilling/SKILL.md",
+    "description": "Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.",
+    "note": "box shared-skills, slash-only spec loop"
+  },
+  "handoff": {
+    "source": "https://github.com/mattpocock/skills.git",
+    "skillPath": "skills/productivity/handoff/SKILL.md",
+    "description": "Compact the current conversation into a handoff document for another agent to pick up.",
+    "note": "box shared-skills, slash-only spec loop"
+  },
+  "sentry-instrument": {
+    "source": "https://github.com/getsentry/sentry-for-ai.git",
+    "skillPath": "src/skills/sentry-instrument/SKILL.md",
+    "description": "Instrument an application with Sentry \u2014 detect the platform, install and initialize the SDK if needed, and wire up any signal \u2014 error monitoring, tracing/performance, logging, metrics, profiling, session replay, user feedback, cron check-ins, uptime monitors for the deployed app, and AI/LLM monitoring (agent runs, token cost, and conversations for OpenAI, Anthropic, Vercel AI, LangChain, Google GenAI, Pydantic AI, Laravel AI, Mastra, Eve, Flue, Pi Durable, the Cloudflare Agents SDK, and Workers AI). Use to add Sentry to a project or to capture more than errors.",
+    "note": "box shared-skills, kyaloon-app crash monitoring"
+  },
+  "systematic-debugging": {
+    "source": "https://github.com/obra/superpowers.git",
+    "skillPath": "skills/systematic-debugging/SKILL.md",
+    "description": "Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes",
+    "note": "box shared-skills; mr's plan-then-implement flow uses these in Claude Code"
+  },
+  "to-spec": {
+    "source": "https://github.com/mattpocock/skills.git",
+    "skillPath": "skills/engineering/to-spec/SKILL.md",
+    "description": "Turn the current conversation into a spec and publish it to the project issue tracker: no interview, just synthesis of what you've already discussed.",
+    "note": "box shared-skills, slash-only spec loop"
+  },
+  "verification-before-completion": {
+    "source": "https://github.com/obra/superpowers.git",
+    "skillPath": "skills/verification-before-completion/SKILL.md",
+    "description": "Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always",
+    "note": "box shared-skills; mr's plan-then-implement flow uses these in Claude Code"
+  },
+  "writing-plans": {
+    "source": "https://github.com/obra/superpowers.git",
+    "skillPath": "skills/writing-plans/SKILL.md",
+    "description": "Use when you have a spec or requirements for a multi-step task, before touching code",
+    "note": "box shared-skills; mr's plan-then-implement flow uses these in Claude Code"
+  },
+  "integration-expo": {
+    "vendored_from": "https://github.com/PostHog/skills/tree/5cf5f5a/skills/posthog/all/skills/integration-expo",
+    "license": "MIT",
+    "description": "PostHog integration for Expo applications",
+    "note": "box shared-skills; removed from PostHog/skills HEAD (checked 2026-10-30)"
+  }
+}
