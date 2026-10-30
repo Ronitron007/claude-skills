@@ -239,6 +239,16 @@
       "exported_to": "authored/skills/writing-prompts"
     },
     {
+      "name": "zz-export-test",
+      "kind": "skill",
+      "path": "~/.claude/skills/zz-export-test",
+      "linked_to_claude": true,
+      "description": "t",
+      "class": "authored",
+      "evidence": "no lock, plugin, or vendor metadata",
+      "exported_to": "authored/skills/zz-export-test"
+    },
+    {
       "name": "brainstorming",
       "kind": "skill",
       "path": "~/.agents/skills/brainstorming",
