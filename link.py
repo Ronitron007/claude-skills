@@ -74,16 +74,19 @@ def adopt():
         if name in lock:  # reinstalled by npx skills: the fresh copy wins
             replace_dir(p, INSTALLED / name)
             say("adopted reinstall:", name, "-> installed/")
+            if name not in known() and not dry:  # a new install: record its source so it reaches GitHub
+                lk = lock[name]
+                declare(name, {"source": lk.get("sourceUrl") or lk["source"], "skillPath": lk.get("skillPath"),
+                               "description": description(INSTALLED / name),
+                               "note": f"installed on {socket.gethostname()} {date.today()}"})
+                say("recorded new install in sources.json:", name)
             continue
         t = target(name)
         if t is None:
             replace_dir(p, EXTRA / name)
             if not dry:
-                src = REPO / "sources.json"
-                s = json.loads(src.read_text()) if src.exists() else {}
-                s[name] = {"class": "authored", "description": description(EXTRA / name),
-                           "note": f"adopted on {socket.gethostname()} {date.today()}"}
-                src.write_text(json.dumps(s, indent=2) + "\n")
+                declare(name, {"class": "authored", "description": description(EXTRA / name),
+                               "note": f"adopted on {socket.gethostname()} {date.today()}"})
             say("adopted new skill:", name, "-> extra/skills + sources.json")
         elif same_tree(p, t):
             if not dry:
@@ -91,6 +94,22 @@ def adopt():
         else:
             replace_dir(p, t)
             say("kept local edit:", name, "->", t.relative_to(REPO))
+
+
+def known() -> set:
+    """Skills the repo already knows: sources.json plus the main machine's manifest."""
+    src, man = REPO / "sources.json", REPO / "manifest.json"
+    names = set(json.loads(src.read_text())) if src.exists() else set()
+    if man.exists():
+        names |= {e["name"] for e in json.loads(man.read_text())["skills"]}
+    return names
+
+
+def declare(name: str, entry: dict):
+    src = REPO / "sources.json"
+    s = json.loads(src.read_text()) if src.exists() else {}
+    s[name] = entry
+    src.write_text(json.dumps(s, indent=2) + "\n")
 
 
 def description(d: Path) -> str:
