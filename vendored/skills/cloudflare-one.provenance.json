@@ -1,0 +1,5 @@
+{
+  "name": "cloudflare-one",
+  "path": "~/.claude/skills/cloudflare-one",
+  "evidence": "batch install of 11 skills incl. skills from cloudflare/skills (inferred)"
+}

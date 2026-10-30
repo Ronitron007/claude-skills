@@ -1,0 +1,5 @@
+{
+  "name": "teach-impeccable",
+  "path": "~/.claude/skills/teach-impeccable",
+  "evidence": "in ~/.agents/.skill-lock.json from pbakaus/impeccable; upstream no longer has .claude/skills/teach-impeccable/SKILL.md"
+}

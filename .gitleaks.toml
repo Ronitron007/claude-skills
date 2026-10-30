@@ -1,0 +1,12 @@
+# Default gitleaks rules, plus placeholders that vendored docs use as examples.
+# Add a placeholder here only after you read the hit and confirm it is not a real key.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "doc placeholders"
+regexes = [
+  '''YOUR_API_TOKEN''',
+  '''sk_live_abc123''',
+  '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.\.\.''',
+]

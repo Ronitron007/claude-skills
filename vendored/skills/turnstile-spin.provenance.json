@@ -1,0 +1,5 @@
+{
+  "name": "turnstile-spin",
+  "path": "~/.claude/skills/turnstile-spin",
+  "evidence": "batch install of 11 skills incl. skills from cloudflare/skills (inferred)"
+}

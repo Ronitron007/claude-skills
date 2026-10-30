@@ -1,0 +1,5 @@
+{
+  "name": "cloudflare",
+  "path": "~/.claude/skills/cloudflare",
+  "evidence": "same name as plugin cloudflare@cloudflare skill, content differs"
+}

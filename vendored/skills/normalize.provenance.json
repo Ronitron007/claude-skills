@@ -1,0 +1,5 @@
+{
+  "name": "normalize",
+  "path": "~/.claude/skills/normalize",
+  "evidence": "in ~/.agents/.skill-lock.json from pbakaus/impeccable; upstream no longer has .claude/skills/normalize/SKILL.md"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "convert-documents-to-markdown",
+  "path": "~/.claude/skills/convert-documents-to-markdown",
+  "evidence": "frontmatter author=firecrawl license=MIT"
+}

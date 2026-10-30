@@ -1,0 +1,5 @@
+{
+  "name": "sandbox-migrate-to-next",
+  "path": "~/.claude/skills/sandbox-migrate-to-next",
+  "evidence": "batch install of 11 skills incl. skills from cloudflare/skills (inferred)"
+}

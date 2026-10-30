@@ -1,0 +1,5 @@
+{
+  "name": "clarify",
+  "path": "~/.claude/skills/clarify",
+  "evidence": "in ~/.agents/.skill-lock.json from pbakaus/impeccable; upstream no longer has .claude/skills/clarify/SKILL.md"
+}

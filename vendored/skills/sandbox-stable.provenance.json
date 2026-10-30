@@ -1,0 +1,5 @@
+{
+  "name": "sandbox-stable",
+  "path": "~/.claude/skills/sandbox-stable",
+  "evidence": "batch install of 11 skills incl. skills from cloudflare/skills (inferred)"
+}
