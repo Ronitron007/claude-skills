@@ -12,9 +12,10 @@ mkdir -p ~/.claude/skills ~/.claude/commands
 for c in authored vendored; do
   for d in "$c"/skills/*/; do
     [ -d "$d" ] || continue
-    n=$(basename "$d"); mkdir -p ~/.claude/skills/"$n" && cp -R "$d". ~/.claude/skills/"$n"/
+    n=$(basename "$d"); [ -L ~/.claude/skills/"$n" ] && continue  # linked by link.py: already the repo copy
+    mkdir -p ~/.claude/skills/"$n" && cp -R "$d". ~/.claude/skills/"$n"/
   done
-  for f in "$c"/commands/*.md; do [ -f "$f" ] && cp "$f" ~/.claude/commands/; done
+  for f in "$c"/commands/*.md; do [ -f "$f" ] && [ ! -L ~/.claude/commands/"$(basename "$f")" ] && cp "$f" ~/.claude/commands/; done
 done
 echo "copied authored + vendored skills"
 

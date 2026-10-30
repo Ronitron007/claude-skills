@@ -26,6 +26,8 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import fixes
+
 HOME = Path.home()
 CLAUDE = HOME / ".claude"
 AGENTS = HOME / ".agents"
@@ -158,9 +160,12 @@ def collect():
 
     entries += declared(sources, upstream)
 
+    # a restore or a git checkout rewrites many files at once; that is not an installer run
+    prev = json.loads((REPO / "manifest.json").read_text())["skills"] if (REPO / "manifest.json").exists() else []
+    was_authored = {e["name"] for e in prev if e.get("class") == "authored"}
     for e in pending:
         by = batch(mtimes[e["name"]])
-        if by:
+        if by and e["name"] not in was_authored:
             e |= cls("vendored", f"{by} (inferred)")
         else:
             e |= cls("authored", "no lock, plugin, or vendor metadata")
@@ -202,7 +207,8 @@ def declared(sources: dict, upstream: dict) -> list:
             if upstream.get(upstream_url(s["source"], s.get("skillPath"))) is False:
                 e["evidence"] += f"; warning: upstream no longer has {s.get('skillPath')}"
         else:
-            e |= cls("vendored", f"declared in sources.json, copy in extra/skills; from {s.get('vendored_from')}"
+            frm = f"; from {s['vendored_from']}" if s.get("vendored_from") else ""
+            e |= cls(s.get("class", "vendored"), "declared in sources.json, copy in extra/skills" + frm
                      + (f"; {s['note']}" if s.get("note") else ""))
             e["_real"] = EXTRA / name
         out.append(e)
@@ -283,7 +289,7 @@ def export(entries, plist, mlist):
         p = REPO / g
         shutil.rmtree(p) if p.is_dir() else p.unlink(missing_ok=True)
 
-    secrets = []
+    secrets, fx = [], fixes.load()
     for e in entries:
         if e["class"] not in ("authored", "vendored"):
             continue
@@ -300,6 +306,8 @@ def export(entries, plist, mlist):
                     secrets.append(str(out.relative_to(REPO)))
             except UnicodeDecodeError:
                 pass
+        if (dest / "SKILL.md").exists():
+            fixes.fix_file(dest / "SKILL.md", fx)
         e["exported_to"] = str(dest.relative_to(REPO))
         if e["class"] == "vendored":
             (dest.parent / f"{e['name']}.provenance.json").write_text(
@@ -353,9 +361,10 @@ mkdir -p ~/.claude/skills ~/.claude/commands
 for c in authored vendored; do
   for d in "$c"/skills/*/; do
     [ -d "$d" ] || continue
-    n=$(basename "$d"); mkdir -p ~/.claude/skills/"$n" && cp -R "$d". ~/.claude/skills/"$n"/
+    n=$(basename "$d"); [ -L ~/.claude/skills/"$n" ] && continue  # linked by link.py: already the repo copy
+    mkdir -p ~/.claude/skills/"$n" && cp -R "$d". ~/.claude/skills/"$n"/
   done
-  for f in "$c"/commands/*.md; do [ -f "$f" ] && cp "$f" ~/.claude/commands/; done
+  for f in "$c"/commands/*.md; do [ -f "$f" ] && [ ! -L ~/.claude/commands/"$(basename "$f")" ] && cp "$f" ~/.claude/commands/; done
 done
 echo "copied authored + vendored skills"
 '''
@@ -443,11 +452,50 @@ def commit(push: bool):
     return msg
 
 
+def linked_here() -> bool:
+    """True on a machine where link.py made ~/.claude/skills point into this repo (it runs sync.sh)."""
+    root = CLAUDE / "skills"
+    return root.exists() and any(p.is_symlink() and str(p.resolve()).startswith(str(REPO) + "/")
+                                 for p in root.iterdir())
+
+
+def pull_first():
+    """Take merged PRs (for example from sync.sh on another machine) before exporting, so the
+    export does not undo them and the push is not rejected. Copies changed repo skills into
+    ~/.claude so the next collect() sees them."""
+    if git("branch", "--show-current").stdout.strip() != "main" or not git("remote").stdout.strip():
+        return
+    before = git("rev-parse", "HEAD").stdout.strip()
+    if git("pull", "--rebase", "--autostash", "-q").returncode != 0:
+        git("rebase", "--abort")
+        print("warn: git pull failed; exporting without it (push may fail)", file=sys.stderr)
+        return
+    declared_names = json.loads(SOURCES.read_text()).keys() if SOURCES.exists() else []
+    for path in sorted(set(git("diff", "--name-only", before, "HEAD", "--", "authored", "vendored").stdout.split())):
+        parts = path.split("/")
+        if len(parts) < 3 or parts[2].endswith(".provenance.json"):
+            continue
+        src = REPO / parts[0] / parts[1] / parts[2]
+        dest = CLAUDE / parts[1] / parts[2]
+        if parts[2].removesuffix(".md") in declared_names or dest.is_symlink() or not src.exists():
+            continue
+        if src.is_dir():
+            shutil.copytree(src, dest, dirs_exist_ok=True)
+        else:
+            shutil.copy2(src, dest)
+        print(f"pulled into ~/.claude: {parts[1]}/{parts[2]}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--no-commit", action="store_true")
     ap.add_argument("--no-push", action="store_true")
+    ap.add_argument("--no-pull", action="store_true")
     a = ap.parse_args()
+    if linked_here():
+        raise SystemExit("this machine is linked to the repo (sync.sh); run export.py only on the main machine")
+    if not a.no_pull and not a.no_commit:
+        pull_first()
     # launchd drops change events that land while a run is in progress, so re-run until stable
     for _ in range(3):
         before = watched_signature()

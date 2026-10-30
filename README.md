@@ -4,6 +4,38 @@ This repo keeps an export of all global Claude Code skills from one machine. Clo
 
 The script `export.py` sorts each skill by its source. Then it copies the skill or records how to install it again.
 
+## How this works `readme.how`
+
+This repo is the one source of truth for skills. Two kinds of machine use it:
+
+| Machine | Its truth | Runs | Writes to GitHub |
+|---|---|---|---|
+| Main machine (the Mac) | `~/.claude` | `export.py` each hour (launchd, `install.sh`) | commits to `main` |
+| Other machines (the box, others) | this clone | `./sync.sh` | a `sync/<host>` branch and a PR, never `main` |
+
+On an other machine, `~/.claude/skills/<name>` and `~/.claude/commands/<file>` are links into the clone, so there is one copy to edit. Cursor also reads `~/.claude/skills`, so `link.py` puts no links in `~/.cursor/skills`. Cursor does not remove duplicates, so a link in both folders would show the skill twice.
+
+`./sync.sh` does these steps:
+
+1. It commits local edits to the `sync/<host>` branch.
+2. It merges `origin/main`.
+3. It runs `./restore.sh`.
+4. It runs `link.py`. `link.py` moves real folders in `~/.claude/skills` into the clone, makes the links, and applies `fixes.json`.
+5. It runs the host file `hosts/<host>.sh`, if there is one.
+6. If the branch differs from `main`, it runs gitleaks, pushes the branch, and opens or updates the PR.
+
+Where a skill folder lives in the clone (the first match wins): `extra/skills` (declared in `sources.json`), `installed/` (put there by `npx skills`, not committed), `vendored/skills`, `authored/skills`. `npx skills add` writes only to `~/.claude/skills`. This is why `restore.sh` can make a copy there, and the next `link.py` moves that copy to `installed/`. Run `./sync.sh` again at any time; each run gives the same result.
+
+The two writers do not conflict:
+
+- `export.py` on the main machine first pulls `main`. It copies the merged changes to `authored/` and `vendored/` into `~/.claude`, then exports. So a merged sync PR is not undone, and the push is not rejected.
+- `export.py` stops on a machine where `link.py` ran. Do not run it there.
+- Merge sync PRs soon. Until you merge it, a PR that changes `authored/` or `vendored/` can conflict with the hourly export.
+
+To add a skill from a public repo, add it to `sources.json` (`readme.sources`). To add a skill you write on an other machine, create `~/.claude/skills/<name>/SKILL.md` and run `./sync.sh`. On the main machine, create the skill as before; the export finds it.
+
+`fixes.json` corrects frontmatter in each copy. It renames `user-invokable` to `user-invocable`, and it keeps `find-skills` slash-only.
+
 ## Use on a new machine `readme.restore`
 
 You need `git` and Claude Code. You also need Node.js for the `npx` installs.
