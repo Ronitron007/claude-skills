@@ -22,7 +22,7 @@ On an other machine, `~/.claude/skills/<name>` and `~/.claude/commands/<file>` a
 3. It runs `./restore.sh`.
 4. It runs `link.py`. `link.py` moves real folders in `~/.claude/skills` into the clone, makes the links, and applies `fixes.json`.
 5. It runs the host file `hosts/<host>.sh`, if there is one.
-6. If the branch differs from `main`, it runs gitleaks, pushes the branch (fast-forward only), and opens or updates the PR. If the remote branch moved on, it merges it and pushes again. Only if that merge conflicts does it push one dated branch, `<branch>-YYYYMMDD-HHMM`, and pin it in `.sync-branch`, so later runs reuse that branch and its PR. A push that changes nothing says so and does not touch the PR.
+6. If the branch differs from `main`, it runs gitleaks, pushes the branch (fast-forward only), and opens or updates the PR. If the remote branch moved on, it merges it and pushes again. Only if that merge conflicts does it push one dated branch, `<branch>-YYYYMMDD-HHMM`, and pin it in `.sync-branch`, so later runs reuse that branch and its PR. A push that changes nothing says so; every run still makes sure the branch has an open PR (an earlier `gh pr create` may have failed).
 
 Where a skill folder lives in the clone (the first match wins): `extra/skills` (declared in `sources.json`), `installed/` (put there by `npx skills`, not committed), `vendored/skills`, `authored/skills`. `npx skills add` writes only to `~/.claude/skills`. This is why `restore.sh` can make a copy there, and the next `link.py` moves that copy to `installed/`. Run `./sync.sh` again at any time; each run gives the same result.
 

@@ -82,14 +82,13 @@ if ! out=$(push "$REMOTE"); then
     say "origin/$BRANCH conflicts with this branch; using $REMOTE from now on (.sync-branch)"
   fi
 fi
-if grep -q '^=' <<<"$out"; then             # porcelain "=": the remote already had this commit
-  say "$REMOTE is up to date; nothing new to push"; exit 0
-fi
+did="pushed"; grep -q '^=' <<<"$out" && did="up to date (nothing new pushed)"   # porcelain "=": no change
+# always make sure the branch has an open PR: an earlier `gh pr create` may have failed
 if command -v gh >/dev/null; then
   url=$(gh pr list --head "$REMOTE" --state open --json url -q '.[0].url' 2>/dev/null)
   [ -n "$url" ] || url=$(gh pr create --base main --head "$REMOTE" --title "sync: skills from $HOST" \
     --body "Local skill changes from \`$HOST\`, made by sync.sh. Review, then merge; the main machine's export picks them up." 2>&1 | tail -1)
-  say "pushed $REMOTE: $url"
+  say "$REMOTE $did: $url"
 else
-  say "pushed $REMOTE; open a PR against main"
+  say "$REMOTE $did; open a PR against main"
 fi

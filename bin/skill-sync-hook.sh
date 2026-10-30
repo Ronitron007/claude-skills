@@ -7,7 +7,7 @@
 trap 'exit 0' EXIT                                     # whatever happens below, exit 0
 exec 2>/dev/null
 if [ ! -t 0 ]; then                                    # drain hook JSON (we do not need it), bounded
-  if command -v timeout >/dev/null; then timeout 2 cat >/dev/null; else cat >/dev/null; fi
+  if command -v timeout >/dev/null; then timeout 2 cat >/dev/null; else while IFS= read -r -t 2 _; do :; done; fi
 fi
 exec </dev/null >/dev/null
 [ "${SKILL_SYNC_DISABLE:-0}" = 1 ] || [ "${SKILLSYNC_DISABLE:-0}" = 1 ] && exit 0
@@ -36,6 +36,7 @@ touch "$STATE/pending"
 setsid nohup bash -c '
   sleep "${SKILL_SYNC_DEBOUNCE:-15}"                       # let a burst of session ends settle
   echo "== $(date -Iseconds) record" >>"$1/sync.log"
-  timeout 300 "$2/sync.sh" --record >>"$1/sync.log" 2>&1 && rm -f "$1/pending"
+  t=; command -v timeout >/dev/null && t="timeout 300"
+  $t "$2/sync.sh" --record >>"$1/sync.log" 2>&1 && rm -f "$1/pending"
 ' _ "$STATE" "$REPO" </dev/null >/dev/null 2>&1 &
 exit 0
