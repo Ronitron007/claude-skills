@@ -423,16 +423,27 @@ def main():
     ap.add_argument("--no-commit", action="store_true")
     ap.add_argument("--no-push", action="store_true")
     a = ap.parse_args()
-    entries = collect()
-    plist, mlist = plugins()
-    secrets = export(entries, plist, mlist)
-    print(", ".join(f"{c}={n}" for c, n in sorted(Counter(e["class"] for e in entries).items())))
-    if secrets:
-        print("possible secrets, not committing:\n  " + "\n  ".join(secrets), file=sys.stderr)
-        return 1
-    if not a.no_commit:
-        print(commit(push=not a.no_push))
+    # launchd drops change events that land while a run is in progress, so re-run until stable
+    for _ in range(3):
+        before = watched_signature()
+        entries = collect()
+        plist, mlist = plugins()
+        secrets = export(entries, plist, mlist)
+        print(", ".join(f"{c}={n}" for c, n in sorted(Counter(e["class"] for e in entries).items())))
+        if secrets:
+            print("possible secrets, not committing:\n  " + "\n  ".join(secrets), file=sys.stderr)
+            return 1
+        if not a.no_commit:
+            print(commit(push=not a.no_push))
+        if watched_signature() == before:
+            break
     return 0
+
+
+def watched_signature():
+    paths = [CLAUDE / "skills", CLAUDE / "commands", AGENTS / "skills", AGENTS / ".skill-lock.json",
+             CLAUDE / "plugins/installed_plugins.json", CLAUDE / "plugins/known_marketplaces.json"]
+    return [(str(p), p.stat().st_mtime_ns) for p in paths if p.exists()]
 
 
 if __name__ == "__main__":
