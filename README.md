@@ -10,8 +10,8 @@ This repo is the one source of truth for skills. Two kinds of machine use it:
 
 | Machine | Its truth | Runs | Writes to GitHub |
 |---|---|---|---|
-| Main machine (the Mac) | `~/.claude` | `export.py` each hour (launchd, `install.sh`) | commits to `main` |
-| Other machines (the box, others) | this clone | `./sync.sh` | a `sync/<host>` branch and a PR, never `main` |
+| Main machine (the Mac) | `~/.claude` | `python3 export.py`, by hand | commits to `main` |
+| Other machines (the box, others) | this clone | `./sync.sh`, by hand | a `sync/<host>` branch and a PR, never `main` |
 
 On an other machine, `~/.claude/skills/<name>` and `~/.claude/commands/<file>` are links into the clone, so there is one copy to edit. Cursor also reads `~/.claude/skills`, so `link.py` puts no links in `~/.cursor/skills`. Cursor does not remove duplicates, so a link in both folders would show the skill twice.
 
@@ -30,7 +30,8 @@ The two writers do not conflict:
 
 - `export.py` on the main machine first runs `git pull --rebase` from `origin main`. It copies the merged changes to `authored/` and `vendored/` into `~/.claude`, then exports. So a merged sync PR is not undone, and the push is not rejected.
 - `export.py` stops on a machine where `link.py` ran. Do not run it there.
-- Merge sync PRs soon. Until you merge it, a PR that changes `authored/` or `vendored/` can conflict with the hourly export.
+- Merge sync PRs soon. Until you merge it, a PR that changes `authored/` or `vendored/` can conflict with the next export.
+- Sync is manual. Nothing in this repo schedules `sync.sh`. `install.sh` (below) is an optional launchd agent for the Mac export only.
 
 To add a skill from a public repo, add it to `sources.json` (`readme.sources`). To add a skill you write on an other machine, create `~/.claude/skills/<name>/SKILL.md` and run `./sync.sh`. On the main machine, create the skill as before; the export finds it.
 
