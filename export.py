@@ -215,6 +215,13 @@ def declared(sources: dict, upstream: dict) -> list:
     return out
 
 
+def has_secret(f: Path) -> bool:
+    try:
+        return bool(SECRET_RE.search(f.read_text()))
+    except UnicodeDecodeError:
+        return False
+
+
 def cls(c, evidence):
     return {"class": c, "evidence": evidence}
 
@@ -296,16 +303,17 @@ def export(entries, plist, mlist):
         sub = "commands" if e["kind"] == "command" else "skills"
         dest = REPO / e["class"] / sub / (e["name"] + (".md" if e["kind"] == "command" else ""))
         src = e["_real"]
+        if src.parent == EXTRA:  # declared in sources.json: extra/skills is the one copy, keep it there
+            secrets += [str(f.relative_to(REPO)) for f in files_of(src) if has_secret(f)]
+            e["exported_to"] = str(src.relative_to(REPO))
+            continue
         for f in files_of(src):
             rel = f.relative_to(src) if src.is_dir() else Path()
             out = dest / rel if src.is_dir() else dest
             out.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(f, out)
-            try:
-                if SECRET_RE.search(f.read_text()):
-                    secrets.append(str(out.relative_to(REPO)))
-            except UnicodeDecodeError:
-                pass
+            if has_secret(f):
+                secrets.append(str(out.relative_to(REPO)))
         if (dest / "SKILL.md").exists():
             fixes.fix_file(dest / "SKILL.md", fx)
         e["exported_to"] = str(dest.relative_to(REPO))
@@ -358,7 +366,7 @@ try() { "$@" || { echo "warn: failed: $*" >&2; FAILED=$((FAILED + 1)); }; }
 mkdir -p ~/.claude/skills ~/.claude/commands
 
 # authored + vendored: copy back
-for c in authored vendored; do
+for c in authored vendored extra; do  # extra: skills declared in sources.json
   for d in "$c"/skills/*/; do
     [ -d "$d" ] || continue
     n=$(basename "$d"); [ -L ~/.claude/skills/"$n" ] && continue  # linked by link.py: already the repo copy
@@ -366,7 +374,7 @@ for c in authored vendored; do
   done
   for f in "$c"/commands/*.md; do [ -f "$f" ] && [ ! -L ~/.claude/commands/"$(basename "$f")" ] && cp "$f" ~/.claude/commands/; done
 done
-echo "copied authored + vendored skills"
+echo "copied authored, vendored and extra skills"
 '''
 
 

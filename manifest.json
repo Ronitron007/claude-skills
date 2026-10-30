@@ -840,7 +840,7 @@
       "description": "PostHog integration for Expo applications",
       "class": "vendored",
       "evidence": "declared in sources.json, copy in extra/skills; from https://github.com/PostHog/skills/tree/5cf5f5a/skills/posthog/all/skills/integration-expo; box shared-skills; removed from PostHog/skills HEAD (checked 2026-10-30)",
-      "exported_to": "vendored/skills/integration-expo"
+      "exported_to": "extra/skills/integration-expo"
     },
     {
       "name": "interaction-design",

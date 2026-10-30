@@ -133,6 +133,27 @@ def ours(p: Path) -> bool:
     return p.is_symlink() and any(os.readlink(p).startswith(o) for o in OURS)
 
 
+def build_view(want: dict):
+    """Update view/ in place, one atomic rename per entry, so a reader (mr, the registry hook) never
+    sees it empty or half-built. Links that are already right are left alone."""
+    if VIEW.is_symlink() or (VIEW.exists() and not VIEW.is_dir()):
+        VIEW.unlink()
+    VIEW.mkdir(exist_ok=True)
+    for name, src in want.items():
+        p = VIEW / name
+        if p.is_symlink() and os.readlink(p) == str(src):
+            continue
+        if p.is_dir() and not p.is_symlink():
+            shutil.rmtree(p)  # not ours: view/ holds only links
+        tmp = VIEW / f".{name}.tmp-{os.getpid()}"
+        tmp.unlink(missing_ok=True)
+        tmp.symlink_to(src)
+        os.replace(tmp, p)
+    for p in list(VIEW.iterdir()):
+        if p.name not in want:
+            shutil.rmtree(p) if p.is_dir() and not p.is_symlink() else p.unlink()
+
+
 def main():
     CLAUDE_SKILLS.mkdir(parents=True, exist_ok=True)
     CLAUDE_CMDS.mkdir(parents=True, exist_ok=True)
@@ -163,16 +184,12 @@ def main():
                 p.unlink()
                 say("removed duplicate cursor link:", p.name)
     if not dry:
-        if VIEW.exists():
-            shutil.rmtree(VIEW)
-        VIEW.mkdir()
-        for n in names:
-            (VIEW / n).symlink_to(target(n))
+        (REPO / "registry" / ".usage.log").touch()  # gitignored; the Claude Code skill hook appends here
+        want = {n: target(n) for n in names}
         for f in ["README.md", "REGISTRY.md", "registry.json", "SELECTION-METHOD.md", "bin", ".usage.log"]:
-            if f == ".usage.log":
-                (REPO / "registry" / f).touch()  # gitignored; the Claude Code skill hook appends here
             if (REPO / "registry" / f).exists():
-                (VIEW / f).symlink_to(REPO / "registry" / f)
+                want[f] = REPO / "registry" / f
+        build_view(want)
     say(f"{len(names)} skills linked into {CLAUDE_SKILLS}")
 
 

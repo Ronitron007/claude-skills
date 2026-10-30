@@ -9,7 +9,7 @@ try() { "$@" || { echo "warn: failed: $*" >&2; FAILED=$((FAILED + 1)); }; }
 mkdir -p ~/.claude/skills ~/.claude/commands
 
 # authored + vendored: copy back
-for c in authored vendored; do
+for c in authored vendored extra; do  # extra: skills declared in sources.json
   for d in "$c"/skills/*/; do
     [ -d "$d" ] || continue
     n=$(basename "$d"); [ -L ~/.claude/skills/"$n" ] && continue  # linked by link.py: already the repo copy
@@ -17,7 +17,7 @@ for c in authored vendored; do
   done
   for f in "$c"/commands/*.md; do [ -f "$f" ] && [ ! -L ~/.claude/commands/"$(basename "$f")" ] && cp "$f" ~/.claude/commands/; done
 done
-echo "copied authored + vendored skills"
+echo "copied authored, vendored and extra skills"
 
 if have claude 'plugins'; then
   try claude plugin marketplace add 'anthropics/claude-plugins-official'

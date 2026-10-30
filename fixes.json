@@ -1,5 +1,5 @@
 {
-  "_comment": "Frontmatter fixes. export.py applies them to its copies, link.sh to every skill folder on the machine. Keeps working when a re-export or reinstall brings the old text back.",
+  "_comment": "Frontmatter fixes. export.py applies them to its copies, link.py to every skill folder on the machine. Keeps working when a re-export or reinstall brings the old text back.",
   "rename_keys": {"user-invokable": "user-invocable"},
   "set": {"find-skills": {"disable-model-invocation": "true"}}
 }

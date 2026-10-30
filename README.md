@@ -22,7 +22,7 @@ On an other machine, `~/.claude/skills/<name>` and `~/.claude/commands/<file>` a
 3. It runs `./restore.sh`.
 4. It runs `link.py`. `link.py` moves real folders in `~/.claude/skills` into the clone, makes the links, and applies `fixes.json`.
 5. It runs the host file `hosts/<host>.sh`, if there is one.
-6. If the branch differs from `main`, it runs gitleaks, pushes the branch, and opens or updates the PR.
+6. If the branch differs from `main`, it runs gitleaks, pushes the branch (fast-forward only), and opens or updates the PR. If the remote branch moved on, it merges it and pushes again. Only if that merge conflicts does it push one dated branch, `<branch>-YYYYMMDD-HHMM`, and pin it in `.sync-branch`, so later runs reuse that branch and its PR. A push that changes nothing says so and does not touch the PR.
 
 Where a skill folder lives in the clone (the first match wins): `extra/skills` (declared in `sources.json`), `installed/` (put there by `npx skills`, not committed), `vendored/skills`, `authored/skills`. `npx skills add` writes only to `~/.claude/skills`. This is why `restore.sh` can make a copy there, and the next `link.py` moves that copy to `installed/`. Run `./sync.sh` again at any time; each run gives the same result.
 
@@ -35,16 +35,16 @@ The two writers do not conflict:
 
 ### Hooks: record local changes when a session ends `readme.hooks`
 
-`bin/install-hooks.sh` adds `bin/skill-sync-hook.sh` to Claude Code `SessionEnd` (`~/.claude/settings.json`) and to Cursor `stop` and `sessionEnd` (`~/.cursor/hooks.json`). Run it again at any time; each run gives the same result. `--uninstall` removes the hooks. mr calls the same hook at run start and after `_finalize`.
+`bin/install-hooks.sh` adds `bin/skill-sync-hook.sh` to Claude Code `SessionEnd` (`~/.claude/settings.json`) and to Cursor `stop` and `sessionEnd` (`~/.cursor/hooks.json`). Run it again at any time; each run gives the same result. `--uninstall` removes the hooks. mr calls the same hook once, after `_finalize` (not at run start, so a record never commits half-done agent edits).
 
 1. The hook does a dirty check, which takes about 15 ms. It looks for a real folder in `~/.claude/skills`, a real file in `~/.claude/commands`, a change in the clone, or an earlier record that did not finish. If it finds none, it stops.
 2. If it finds a change, it starts `./sync.sh --record` in the background with `setsid`, because `claude -p` kills hook child processes when it exits.
 3. `--record` runs `link.py` and commits to the sync branch. It then runs gitleaks, pushes and opens or updates the PR. It does not pull or run `restore.sh`.
-4. The hook writes nothing to stdout and always exits 0, so it never blocks a session. It never calls a model and never runs `export.py`.
-5. In an agent that mr starts, pushes are blocked. There the hook only marks the change as pending. mr's own process then records it.
+4. The hook writes nothing (stdout and stderr) and always exits 0, so it never blocks a session. It reads its stdin for at most 2 s. It never calls a model and never runs `export.py`. It does nothing in claude-limits probe sessions.
+5. In an agent that mr starts, pushes are blocked. There the hook only marks the change as pending, and only if the dirty check finds one. mr's own process then records it.
 6. A new `npx skills add` goes to `sources.json` (source + skillPath). This makes it reach GitHub and other machines.
 
-Log: `~/.local/state/skill-sync/sync.log`. Turn the hook off for one command with `SKILL_SYNC_DISABLE=1`. To commit without a push, set `SYNC_NO_PUSH=1`. A `.sync-branch` file, which is not committed, sets the branch (for example the branch of an open PR). A full sync deletes the file after that PR is closed.
+Log: `~/.local/state/skill-sync/sync.log`. Turn the hook off for one command or session with `SKILL_SYNC_DISABLE=1` (or `SKILLSYNC_DISABLE=1`). To commit without a push, set `SYNC_NO_PUSH=1`. A `.sync-branch` file, which is not committed, sets the branch (for example the branch of an open PR). A full sync deletes the file after that PR is closed.
 
 To add a skill from a public repo, add it to `sources.json` (`readme.sources`). To add a skill you write on an other machine, create `~/.claude/skills/<name>/SKILL.md` and run `./sync.sh`. On the main machine, create the skill as before; the export finds it.
 
@@ -64,7 +64,7 @@ The script works on macOS and Linux. You can run it again at any time. It does n
 
 The script does these steps:
 
-1. It copies the authored and vendored skills into `~/.claude/skills` and `~/.claude/commands`.
+1. It copies the authored, vendored and extra (declared in `sources.json`) skills into `~/.claude/skills` and `~/.claude/commands`.
 
 2. It adds the plugin marketplaces and installs the plugins.
 
