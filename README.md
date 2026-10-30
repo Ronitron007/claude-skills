@@ -28,7 +28,7 @@ Where a skill folder lives in the clone (the first match wins): `extra/skills` (
 
 The two writers do not conflict:
 
-- `export.py` on the main machine first pulls `main`. It copies the merged changes to `authored/` and `vendored/` into `~/.claude`, then exports. So a merged sync PR is not undone, and the push is not rejected.
+- `export.py` on the main machine first runs `git pull --rebase` from `origin main`. It copies the merged changes to `authored/` and `vendored/` into `~/.claude`, then exports. So a merged sync PR is not undone, and the push is not rejected.
 - `export.py` stops on a machine where `link.py` ran. Do not run it there.
 - Merge sync PRs soon. Until you merge it, a PR that changes `authored/` or `vendored/` can conflict with the hourly export.
 
@@ -119,7 +119,7 @@ Do not run `export.py` on a second machine. It rebuilds the export from that mac
 
 The script `install.sh` installs a launchd agent on macOS. The agent runs `export.py` when a skill folder, the lock file, or the plugin list changes. The agent also runs one time each hour. This catches edits inside a skill folder, because launchd does not watch subfolders.
 
-Each run builds the generated files again. If no skill changed, the run makes no commit. If the repo has a remote, the script pushes the commit.
+Each run first runs `git pull --rebase --autostash` from `origin main`, when the clone is on `main` and has a remote. It copies the merged skill changes into `~/.claude`, then builds the generated files again. So a PR merged from another machine does not make the push fail. If the pull fails, the run continues without it and logs a warning. Use `--no-pull` to skip it. If no skill changed, the run makes no commit. If the repo has a remote, the script pushes the commit.
 
 1. Run `./install.sh` to install or update the agent.
 
