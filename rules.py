@@ -47,6 +47,8 @@ def apply(text: str, block: str) -> str:
         raise ValueError(f"{begins} begin and {ends} end markers; fix the file by hand")
     if begins:  # replace in place, keeping the newline before the block
         m = BLOCK_RE.search(text)
+        if m is None:
+            raise ValueError("end marker before begin marker; fix the file by hand")
         lead = "\n" if m.group(0).startswith("\n") else ""
         if not block and m.end() == len(text):
             lead = ""  # the block was appended (see below): removing it restores the original bytes
@@ -77,8 +79,11 @@ def write_atomic(f: Path, content: str):
 
 def is_linked_worktree() -> bool:
     """A worktree or a second checkout would write its own, short-lived path into every agent file."""
-    r = subprocess.run(["git", "-C", str(REPO), "rev-parse", "--git-dir", "--git-common-dir"],
-                       capture_output=True, text=True)
+    try:
+        r = subprocess.run(["git", "-C", str(REPO), "rev-parse", "--git-dir", "--git-common-dir"],
+                           capture_output=True, text=True)
+    except FileNotFoundError:  # no git: cannot be a worktree we know of
+        return False
     dirs = r.stdout.split()
     return r.returncode == 0 and len(dirs) == 2 and Path(REPO, dirs[0]).resolve() != Path(REPO, dirs[1]).resolve()
 
