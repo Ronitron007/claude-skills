@@ -272,6 +272,28 @@
       "description": "Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies"
     },
     {
+      "name": "eas-update",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Configure and use EAS Update for over-the-air JavaScript and asset updates with expo-updates and EAS CLI. Use when setting up OTA updates, running eas update:configure or eas update, publishing to preview/staging/production channels, explaining branches/channels/runtime versions, testing updates, or debugging why an installed build still shows old code. Load for TestFlight, preview, or production updates that do not appear, including questions about cold launches or reopening the app. Not for update health metrics; use eas-update-insights for adoption, crashes, and rollout monitoring.",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/expo/skills.git; box shared-skills, picked for kyaloon-app (Expo)",
+      "source": "https://github.com/expo/skills.git",
+      "skill_path": "plugins/expo/skills/eas-update/SKILL.md"
+    },
+    {
+      "name": "eas-workflows",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Helps understand and write EAS workflow YAML files for Expo projects. Use this skill when the user asks about CI/CD or workflows in an Expo or EAS context, mentions .eas/workflows/, or wants help with EAS build pipelines or deployment automation.",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/expo/skills.git; box shared-skills, picked for kyaloon-app (Expo)",
+      "source": "https://github.com/expo/skills.git",
+      "skill_path": "plugins/expo/skills/eas-workflows/SKILL.md"
+    },
+    {
       "name": "executing-plans",
       "kind": "skill",
       "path": "~/.agents/skills/executing-plans",
@@ -281,6 +303,50 @@
       "source": "https://github.com/obra/superpowers.git",
       "skill_path": "skills/executing-plans/SKILL.md",
       "description": "Use when you have a written implementation plan to execute in a separate session with review checkpoints"
+    },
+    {
+      "name": "expo-data-fetching",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Use when implementing or debugging ANY network request, API call, or data fetching. Covers fetch API, React Query, SWR, error handling, caching, offline support, loading/empty/error screen states, and Expo Router data loaders (`useLoaderData`).",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/expo/skills.git; box shared-skills, picked for kyaloon-app (Expo)",
+      "source": "https://github.com/expo/skills.git",
+      "skill_path": "plugins/expo/skills/expo-data-fetching/SKILL.md"
+    },
+    {
+      "name": "expo-design-system",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Build and maintain a design system inside an Expo app - a reusable theme of design tokens (color, spacing, typography, radius, shadow, motion), reusable component structure with variant/size/state prop conventions, and rules for when to extract a repeated view into a shared component. Use when creating or organizing theme files and design tokens (theme.ts / theme/), extending an existing theme or styling library (NativeWind, Tamagui, Restyle, Unistyles) in its own idiom, standardizing styles so screens (including AI-generated ones) look consistent and polished, fixing an app that looks AI-generated or generic instead of native (the named native-slop tells), building an in-app component library, or auditing an app for design-system drift (hardcoded colors, spacing, fonts). For platform styling specifics (semantic colors, HIG rules, native controls) use expo-native-ui; for folder layout of a new app use expo-project-structure.",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/expo/skills.git; box shared-skills, picked for kyaloon-app (Expo)",
+      "source": "https://github.com/expo/skills.git",
+      "skill_path": "plugins/expo/skills/expo-design-system/SKILL.md"
+    },
+    {
+      "name": "expo-router",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Navigation and routing for Expo Router. Covers file-based routes, groups and dynamic routes, folder organization, Link with previews and context menus, native Stack, page titles, modals and form sheets, NativeTabs, headers and toolbars, and header search bars.",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/expo/skills.git; box shared-skills, picked for kyaloon-app (Expo)",
+      "source": "https://github.com/expo/skills.git",
+      "skill_path": "plugins/expo/skills/expo-router/SKILL.md"
+    },
+    {
+      "name": "expo-upgrade",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Guidelines for upgrading Expo SDK versions and fixing dependency issues",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/expo/skills.git; box shared-skills, picked for kyaloon-app (Expo)",
+      "source": "https://github.com/expo/skills.git",
+      "skill_path": "plugins/expo/skills/expo-upgrade/SKILL.md"
     },
     {
       "name": "find-skills",
@@ -303,6 +369,39 @@
       "source": "https://github.com/obra/superpowers.git",
       "skill_path": "skills/finishing-a-development-branch/SKILL.md",
       "description": "Use when implementation is complete, all tests pass, and you need to decide how to integrate the work"
+    },
+    {
+      "name": "grill-me",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "A relentless interview to sharpen a plan or design.",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/mattpocock/skills.git; box shared-skills, slash-only spec loop",
+      "source": "https://github.com/mattpocock/skills.git",
+      "skill_path": "skills/productivity/grill-me/SKILL.md"
+    },
+    {
+      "name": "grilling",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/mattpocock/skills.git; box shared-skills, slash-only spec loop",
+      "source": "https://github.com/mattpocock/skills.git",
+      "skill_path": "skills/productivity/grilling/SKILL.md"
+    },
+    {
+      "name": "handoff",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Compact the current conversation into a handoff document for another agent to pick up.",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/mattpocock/skills.git; box shared-skills, slash-only spec loop",
+      "source": "https://github.com/mattpocock/skills.git",
+      "skill_path": "skills/productivity/handoff/SKILL.md"
     },
     {
       "name": "mastra",
@@ -338,6 +437,17 @@
       "description": "Use when completing tasks, implementing major features, or before merging to verify work meets requirements"
     },
     {
+      "name": "sentry-instrument",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Instrument an application with Sentry \u2014 detect the platform, install and initialize the SDK if needed, and wire up any signal \u2014 error monitoring, tracing/performance, logging, metrics, profiling, session replay, user feedback, cron check-ins, uptime monitors for the deployed app, and AI/LLM monitoring (agent runs, token cost, and conversations for OpenAI, Anthropic, Vercel AI, LangChain, Google GenAI, Pydantic AI, Laravel AI, Mastra, Eve, Flue, Pi Durable, the Cloudflare Agents SDK, and Workers AI). Use to add Sentry to a project or to capture more than errors.",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/getsentry/sentry-for-ai.git; box shared-skills, kyaloon-app crash monitoring",
+      "source": "https://github.com/getsentry/sentry-for-ai.git",
+      "skill_path": "src/skills/sentry-instrument/SKILL.md"
+    },
+    {
       "name": "subagent-driven-development",
       "kind": "skill",
       "path": "~/.agents/skills/subagent-driven-development",
@@ -351,13 +461,13 @@
     {
       "name": "systematic-debugging",
       "kind": "skill",
-      "path": "~/.agents/skills/systematic-debugging",
-      "linked_to_claude": false,
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes",
       "class": "cli",
-      "evidence": "in ~/.agents/.skill-lock.json from obra/superpowers",
+      "evidence": "declared in sources.json from https://github.com/obra/superpowers.git; box shared-skills; mr's plan-then-implement flow uses these in Claude Code",
       "source": "https://github.com/obra/superpowers.git",
-      "skill_path": "skills/systematic-debugging/SKILL.md",
-      "description": "Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes"
+      "skill_path": "skills/systematic-debugging/SKILL.md"
     },
     {
       "name": "test-driven-development",
@@ -380,6 +490,17 @@
       "source": "https://github.com/jeffallan/claude-skills.git",
       "skill_path": "skills/the-fool/SKILL.md",
       "description": "Use when challenging ideas, plans, decisions, or proposals using structured critical reasoning. Invoke to play devil's advocate, run a pre-mortem, red team, or audit evidence and assumptions."
+    },
+    {
+      "name": "to-spec",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Turn the current conversation into a spec and publish it to the project issue tracker: no interview, just synthesis of what you've already discussed.",
+      "class": "cli",
+      "evidence": "declared in sources.json from https://github.com/mattpocock/skills.git; box shared-skills, slash-only spec loop",
+      "source": "https://github.com/mattpocock/skills.git",
+      "skill_path": "skills/engineering/to-spec/SKILL.md"
     },
     {
       "name": "using-git-worktrees",
@@ -417,13 +538,13 @@
     {
       "name": "verification-before-completion",
       "kind": "skill",
-      "path": "~/.agents/skills/verification-before-completion",
-      "linked_to_claude": false,
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always",
       "class": "cli",
-      "evidence": "in ~/.agents/.skill-lock.json from obra/superpowers",
+      "evidence": "declared in sources.json from https://github.com/obra/superpowers.git; box shared-skills; mr's plan-then-implement flow uses these in Claude Code",
       "source": "https://github.com/obra/superpowers.git",
-      "skill_path": "skills/verification-before-completion/SKILL.md",
-      "description": "Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always"
+      "skill_path": "skills/verification-before-completion/SKILL.md"
     },
     {
       "name": "wrangler",
@@ -439,13 +560,13 @@
     {
       "name": "writing-plans",
       "kind": "skill",
-      "path": "~/.agents/skills/writing-plans",
-      "linked_to_claude": false,
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "Use when you have a spec or requirements for a multi-step task, before touching code",
       "class": "cli",
-      "evidence": "in ~/.agents/.skill-lock.json from obra/superpowers",
+      "evidence": "declared in sources.json from https://github.com/obra/superpowers.git; box shared-skills; mr's plan-then-implement flow uses these in Claude Code",
       "source": "https://github.com/obra/superpowers.git",
-      "skill_path": "skills/writing-plans/SKILL.md",
-      "description": "Use when you have a spec or requirements for a multi-step task, before touching code"
+      "skill_path": "skills/writing-plans/SKILL.md"
     },
     {
       "name": "writing-skills",
@@ -710,6 +831,16 @@
       "skill_path": ".claude/skills/harden/SKILL.md",
       "description": "Improve interface resilience through better error handling, i18n support, text overflow handling, and edge case management. Makes interfaces robust and production-ready.",
       "exported_to": "vendored/skills/harden"
+    },
+    {
+      "name": "integration-expo",
+      "kind": "skill",
+      "path": "sources.json",
+      "linked_to_claude": true,
+      "description": "PostHog integration for Expo applications",
+      "class": "vendored",
+      "evidence": "declared in sources.json, copy in extra/skills; from https://github.com/PostHog/skills/tree/5cf5f5a/skills/posthog/all/skills/integration-expo; box shared-skills; removed from PostHog/skills HEAD (checked 2026-10-30)",
+      "exported_to": "extra/skills/integration-expo"
     },
     {
       "name": "interaction-design",

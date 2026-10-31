@@ -9,14 +9,15 @@ try() { "$@" || { echo "warn: failed: $*" >&2; FAILED=$((FAILED + 1)); }; }
 mkdir -p ~/.claude/skills ~/.claude/commands
 
 # authored + vendored: copy back
-for c in authored vendored; do
+for c in authored vendored extra; do  # extra: skills declared in sources.json
   for d in "$c"/skills/*/; do
     [ -d "$d" ] || continue
-    n=$(basename "$d"); mkdir -p ~/.claude/skills/"$n" && cp -R "$d". ~/.claude/skills/"$n"/
+    n=$(basename "$d"); [ -L ~/.claude/skills/"$n" ] && continue  # linked by link.py: already the repo copy
+    mkdir -p ~/.claude/skills/"$n" && cp -R "$d". ~/.claude/skills/"$n"/
   done
-  for f in "$c"/commands/*.md; do [ -f "$f" ] && cp "$f" ~/.claude/commands/; done
+  for f in "$c"/commands/*.md; do [ -f "$f" ] && [ ! -L ~/.claude/commands/"$(basename "$f")" ] && cp "$f" ~/.claude/commands/; done
 done
-echo "copied authored + vendored skills"
+echo "copied authored, vendored and extra skills"
 
 if have claude 'plugins'; then
   try claude plugin marketplace add 'anthropics/claude-plugins-official'
@@ -40,9 +41,13 @@ fi
 if have npx 'skills CLI skills'; then
   try npx -y skills add 'https://github.com/browser-use/browser-use.git' -g -a claude-code -y -s 'browser-use'
   try npx -y skills add 'https://github.com/cloudflare/skills.git' -g -a claude-code -y -s 'wrangler'
+  try npx -y skills add 'https://github.com/expo/skills.git' -g -a claude-code -y -s 'eas-update' 'eas-workflows' 'expo-data-fetching' 'expo-design-system' 'expo-router' 'expo-upgrade'
+  try npx -y skills add 'https://github.com/getsentry/sentry-for-ai.git' -g -a claude-code -y -s 'sentry-instrument'
   try npx -y skills add 'https://github.com/jeffallan/claude-skills.git' -g -a claude-code -y -s 'the-fool'
   try npx -y skills add 'https://github.com/mastra-ai/skills.git' -g -a claude-code -y -s 'mastra'
-  # installed for other agents only: try npx -y skills add 'https://github.com/obra/superpowers.git' -g -a claude-code -y -s 'brainstorming' 'dispatching-parallel-agents' 'executing-plans' 'finishing-a-development-branch' 'receiving-code-review' 'requesting-code-review' 'subagent-driven-development' 'systematic-debugging' 'test-driven-development' 'using-git-worktrees' 'using-superpowers' 'verification-before-completion' 'writing-plans' 'writing-skills'
+  try npx -y skills add 'https://github.com/mattpocock/skills.git' -g -a claude-code -y -s 'grill-me' 'grilling' 'handoff' 'to-spec'
+  # installed for other agents only: try npx -y skills add 'https://github.com/obra/superpowers.git' -g -a claude-code -y -s 'brainstorming' 'dispatching-parallel-agents' 'executing-plans' 'finishing-a-development-branch' 'receiving-code-review' 'requesting-code-review' 'subagent-driven-development' 'test-driven-development' 'using-git-worktrees' 'using-superpowers' 'writing-skills'
+  try npx -y skills add 'https://github.com/obra/superpowers.git' -g -a claude-code -y -s 'systematic-debugging' 'verification-before-completion' 'writing-plans'
   try npx -y skills add 'https://github.com/vercel-labs/agent-skills.git' -g -a claude-code -y -s 'vercel-react-native-skills'
   try npx -y skills add 'https://github.com/vercel-labs/skills.git' -g -a claude-code -y -s 'find-skills'
   # claude.ai skills: the desktop app syncs them, so install only where it does not
