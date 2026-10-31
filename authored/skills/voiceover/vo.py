@@ -28,7 +28,7 @@ PREMISE = (
     "Script:\n{script}"
 )
 # follow-up requests in the same conversation: Instinct already has the premise
-SHORT = 'Next voiceover, read exactly as written:{tone}\n\n"{script}"'
+SHORT = 'Next voiceover, read exactly as written.{tone}\n\n"{script}"'
 
 
 def token() -> str:
