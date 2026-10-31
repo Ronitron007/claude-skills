@@ -6,6 +6,6 @@
   - On the main machine (the Mac), `export.py` exports it and pushes to `main`.
   - On other machines, `./sync.sh` commits it to a `sync/<host>` branch and opens a PR. Never push to `main` from there.
 - To add a skill from a public repo, add an entry to `{{REPO}}/sources.json`. Do not copy the skill.
-- Do not edit the generated files: `INDEX.md`, `manifest.json`, `restore.sh`.
+- Do not edit the generated files: `INDEX.md`, `manifest.json`, `restore.sh`. On the main machine, `export.py` also rebuilds `authored/` and `vendored/` from `~/.claude/skills`, so edit a skill there.
 - The repo is public. Never put a key, a token, a password, or personal data in a skill.
 - This block comes from `{{REPO}}/rules/agents.md`. Change that file, not this block. `rules.py` writes it again on the next sync.
