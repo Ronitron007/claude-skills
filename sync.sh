@@ -46,6 +46,7 @@ fi
 # 3. restore + link + host policy
 [ -n "$RECORD" ] || ./restore.sh || say "restore.sh had failed steps (see warnings above)"
 python3 link.py || exit 1
+python3 rules.py || say "rules.py failed; agent rule files not updated"
 if [ -z "$RECORD" ] && declare -F host_post >/dev/null; then host_post; fi
 commit "adopt and fix skills" || exit 1
 

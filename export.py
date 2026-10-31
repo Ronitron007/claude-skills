@@ -504,6 +504,12 @@ def main():
         raise SystemExit("this machine is linked to the repo (sync.sh); run export.py only on the main machine")
     if not a.no_pull and not a.no_commit:
         pull_first()
+    if not a.no_commit:  # the agents' global rule files follow rules/agents.md, which a pull may change
+        import rules
+        try:
+            rules.main([])
+        except Exception as err:  # a bad agent file must not stop the export
+            print(f"warn: rules.py failed: {err}", file=sys.stderr)
     # launchd drops change events that land while a run is in progress, so re-run until stable
     for _ in range(3):
         before = watched_signature()
