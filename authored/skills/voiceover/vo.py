@@ -4,8 +4,8 @@
 Commands:
   check                      services, Synapse, WhatsApp login, Instinct room
   up                         start any Cadbury launchd service that is not running
-  compose FILE [--tone T]    print the exact WhatsApp message (no send)
-  send FILE [--tone T] [--name N] [--timeout S]
+  compose FILE [--tone T] [--short]   print the exact WhatsApp message (no send)
+  send FILE [--tone T] [--short] [--name N] [--timeout S]
                              send the message, wait for Instinct's voice note(s),
                              download them into ~/Voiceovers/
 """
@@ -27,6 +27,8 @@ PREMISE = (
     "Read it exactly as written: no intro, no outro, no commentary, no changes to the words.{tone}\n\n"
     "Script:\n{script}"
 )
+# follow-up requests in the same conversation: Instinct already has the premise
+SHORT = 'Next voiceover, read exactly as written:{tone}\n\n"{script}"'
 
 
 def token() -> str:
@@ -108,15 +110,15 @@ def cmd_up(_: argparse.Namespace) -> int:
     return cmd_check(_)
 
 
-def compose(script_file: str, tone: str | None) -> str:
+def compose(script_file: str, tone: str | None, short: bool = False) -> str:
     script = Path(script_file).read_text().strip()
     if not script:
         sys.exit("Script file is empty.")
-    return PREMISE.format(script=script, tone=f" Tone and pace: {tone}." if tone else "")
+    return (SHORT if short else PREMISE).format(script=script, tone=f" Tone and pace: {tone}." if tone else "")
 
 
 def cmd_compose(a: argparse.Namespace) -> int:
-    print(compose(a.file, a.tone))
+    print(compose(a.file, a.tone, a.short))
     return 0
 
 
@@ -125,7 +127,7 @@ def slug(s: str) -> str:
 
 
 def cmd_send(a: argparse.Namespace) -> int:
-    body = compose(a.file, a.tone)
+    body = compose(a.file, a.tone, a.short)
     room, ghost = instinct_ids()
     since = int(time.time() * 1000)
     api("PUT", f"/_matrix/client/v3/rooms/{q(room)}/send/m.room.message/vo{since}", {"msgtype": "m.text", "body": body})
@@ -177,6 +179,7 @@ def main() -> int:
         sp = sub.add_parser(name)
         sp.add_argument("file")
         sp.add_argument("--tone")
+        sp.add_argument("--short", action="store_true", help="follow-up request: skip the premise, send a short line + the quoted script")
         if name == "send":
             sp.add_argument("--name")
             sp.add_argument("--timeout", type=int, default=300)
