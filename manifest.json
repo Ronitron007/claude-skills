@@ -229,6 +229,16 @@
       "exported_to": "authored/skills/surfacing-reasoning"
     },
     {
+      "name": "voiceover",
+      "kind": "skill",
+      "path": "~/.claude/skills/voiceover",
+      "linked_to_claude": true,
+      "description": "Get a voiceover recorded by Instinct (AI agent on WhatsApp, +1 650 870 2892) and save the audio into ~/Voiceovers/. Use when Rohan wants a script read aloud, a voiceover, voice over work, or \"send this to Instinct to read\". Starts the Cadbury Matrix bridge if it is down, sends the script with a voiceover premise, waits for the voice note, downloads it.",
+      "class": "authored",
+      "evidence": "no lock, plugin, or vendor metadata",
+      "exported_to": "authored/skills/voiceover"
+    },
+    {
       "name": "writing-prompts",
       "kind": "skill",
       "path": "~/.claude/skills/writing-prompts",
@@ -586,15 +596,6 @@
       "linked_to_claude": true,
       "class": "junk",
       "evidence": "no SKILL.md (file)",
-      "description": ""
-    },
-    {
-      "name": "voiceover",
-      "kind": "skill",
-      "path": "~/.claude/skills/voiceover",
-      "linked_to_claude": true,
-      "class": "junk",
-      "evidence": "no SKILL.md (dir)",
       "description": ""
     },
     {
