@@ -589,6 +589,15 @@
       "description": ""
     },
     {
+      "name": "voiceover",
+      "kind": "skill",
+      "path": "~/.claude/skills/voiceover",
+      "linked_to_claude": true,
+      "class": "junk",
+      "evidence": "no SKILL.md (dir)",
+      "description": ""
+    },
+    {
       "name": "agents-sdk",
       "kind": "skill",
       "path": "~/.claude/skills/agents-sdk",
