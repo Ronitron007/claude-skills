@@ -129,6 +129,27 @@ The export reads only the machine that runs it. To keep a skill that is on anoth
 
 Do not run `export.py` on a second machine. It rebuilds the export from that machine only, so it removes the skills that are only on the main machine.
 
+## Tell every agent about this repo `readme.agent_rules`
+
+The file `rules/agents.md` is the rule that tells agents about this repo. The script `rules.py` writes it into the global instruction file of each agent on the machine:
+
+| Agent | File |
+|---|---|
+| Claude Code | `~/.claude/CLAUDE.md` |
+| Codex | `~/.codex/AGENTS.md` |
+| Gemini CLI | `~/.gemini/GEMINI.md` |
+| opencode | `~/.config/opencode/AGENTS.md` |
+| Factory Droid | `~/.factory/AGENTS.md` |
+| Pi | `~/.pi/agent/AGENTS.md` |
+
+The script writes only for an agent whose config folder exists. It puts the rule between two markers and does not change other text in the file. `export.py` and `sync.sh` run `rules.py` on each run, so a change to `rules/agents.md` gets to all agents on all machines.
+
+1. To change the rule, edit `rules/agents.md`. Do not edit the block in an agent file.
+
+2. To remove the rule from all agents, run `python3 rules.py --uninstall`.
+
+Cursor keeps its global rules in its own settings, not in a file. The script cannot write them.
+
 ## Automatic updates `readme.auto`
 
 The script `install.sh` installs a launchd agent on macOS. The agent runs `export.py` when a skill folder, the lock file, or the plugin list changes. The agent also runs one time each hour. This catches edits inside a skill folder, because launchd does not watch subfolders.
