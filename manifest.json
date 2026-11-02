@@ -189,6 +189,16 @@
       "exported_to": "authored/skills/jdev"
     },
     {
+      "name": "paxel-remote-setup",
+      "kind": "skill",
+      "path": "~/.claude/skills/paxel-remote-setup",
+      "linked_to_claude": true,
+      "description": "Set up Paxel transcript capture for remote dev boxes. Adds one line to whatever provisions the user's boxes (a dotfiles install script, a devcontainer postCreateCommand, cloud-init runcmd, a box image entrypoint, the app code that creates sandboxes, or a T3 Code or Conductor setup script) so every box copies its Claude Code and Codex sessions, with known credential formats removed, into a private paxel-transcripts repo the user owns, and the Paxel upload on the user's main machine includes them. Use when the user asks to set up Paxel on remote boxes, capture remote or devbox agent sessions for Paxel, or enable the Paxel transcript store.",
+      "class": "authored",
+      "evidence": "no lock, plugin, or vendor metadata",
+      "exported_to": "authored/skills/paxel-remote-setup"
+    },
+    {
       "name": "pr",
       "kind": "skill",
       "path": "~/.claude/skills/pr",
