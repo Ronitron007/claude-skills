@@ -36,7 +36,7 @@ script ──► independent fact-check ──► corrections ──► re-check
 
 ## `stage.viewer` (before the script)
 
-The viewer model is `viewer-rohan.md` (next to this file). It lists what Rohan knows, what is new to him, and his word choices, each with evidence.
+The viewer model is `~/kyaloon-media/viewer/viewer-rohan.md`. It lists what Rohan knows, what is new to him, and his word choices, each with evidence. It stays outside this folder, because the skills repo is public.
 
 1. List every concept the video needs, from the outline down to its foundations.
 2. Mark each one `known` or `teach` from the viewer model. When there is even a little doubt, ask Rohan ("do you know X, or should we walk it?"). He wants to be asked. Use `AskUserQuestion` with multi-select, four terms per question. Never guess a term into `known`.
