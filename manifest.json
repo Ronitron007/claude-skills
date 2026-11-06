@@ -179,6 +179,16 @@
       "exported_to": "authored/skills/diagnose"
     },
     {
+      "name": "explainer-video",
+      "kind": "skill",
+      "path": "~/.claude/skills/explainer-video",
+      "linked_to_claude": true,
+      "description": "Make a narrated, 3Blue1Brown-style explainer video of a code system, design or spec \u2014 Manim animation, narration in Simplified Technical English, an independent fact-check before any recording, and the voice recorded through the voiceover skill. Use this whenever the user asks for an explainer video, a walkthrough video, a \"3b1b style\" video, a narrated animation of how something works, or a video version of a doc, even if they only say \"make a video about X\" or \"explain X in a video\".",
+      "class": "authored",
+      "evidence": "no lock, plugin, or vendor metadata",
+      "exported_to": "authored/skills/explainer-video"
+    },
+    {
       "name": "jdev",
       "kind": "skill",
       "path": "~/.claude/skills/jdev",
