@@ -259,6 +259,16 @@
       "exported_to": "authored/skills/voiceover"
     },
     {
+      "name": "whatsapp",
+      "kind": "skill",
+      "path": "~/.claude/skills/whatsapp",
+      "linked_to_claude": true,
+      "description": "Read and send WhatsApp messages as Rohan, from his own number, for contacts he authorizes. Use when Rohan asks to text or message someone on WhatsApp, check what someone said, read a WhatsApp chat, wait for a reply, save a voice note or photo from a chat, or add or remove a contact from the WhatsApp allowlist. Works through the `whatsapp` MCP server (same tools in Claude Desktop and Claude Code), over the local Cadbury Matrix bridge.",
+      "class": "authored",
+      "evidence": "no lock, plugin, or vendor metadata",
+      "exported_to": "authored/skills/whatsapp"
+    },
+    {
       "name": "writing-prompts",
       "kind": "skill",
       "path": "~/.claude/skills/writing-prompts",
@@ -616,15 +626,6 @@
       "linked_to_claude": true,
       "class": "junk",
       "evidence": "no SKILL.md (file)",
-      "description": ""
-    },
-    {
-      "name": "whatsapp",
-      "kind": "skill",
-      "path": "~/.claude/skills/whatsapp",
-      "linked_to_claude": true,
-      "class": "junk",
-      "evidence": "no SKILL.md (dir)",
       "description": ""
     },
     {
