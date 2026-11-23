@@ -619,6 +619,15 @@
       "description": ""
     },
     {
+      "name": "whatsapp",
+      "kind": "skill",
+      "path": "~/.claude/skills/whatsapp",
+      "linked_to_claude": true,
+      "class": "junk",
+      "evidence": "no SKILL.md (dir)",
+      "description": ""
+    },
+    {
       "name": "agents-sdk",
       "kind": "skill",
       "path": "~/.claude/skills/agents-sdk",
