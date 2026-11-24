@@ -43,7 +43,6 @@ if have npx 'skills CLI skills'; then
   try npx -y skills add 'https://github.com/cloudflare/skills.git' -g -a claude-code -y -s 'wrangler'
   try npx -y skills add 'https://github.com/expo/skills.git' -g -a claude-code -y -s 'eas-update' 'eas-workflows' 'expo-data-fetching' 'expo-design-system' 'expo-router' 'expo-upgrade'
   try npx -y skills add 'https://github.com/getsentry/sentry-for-ai.git' -g -a claude-code -y -s 'sentry-instrument'
-  try npx -y skills add 'https://github.com/jeffallan/claude-skills.git' -g -a claude-code -y -s 'the-fool'
   try npx -y skills add 'https://github.com/mastra-ai/skills.git' -g -a claude-code -y -s 'mastra'
   try npx -y skills add 'https://github.com/mattpocock/skills.git' -g -a claude-code -y -s 'grill-me' 'grilling' 'handoff' 'to-spec'
   # installed for other agents only: try npx -y skills add 'https://github.com/obra/superpowers.git' -g -a claude-code -y -s 'brainstorming' 'dispatching-parallel-agents' 'executing-plans' 'finishing-a-development-branch' 'receiving-code-review' 'requesting-code-review' 'subagent-driven-development' 'test-driven-development' 'using-git-worktrees' 'using-superpowers' 'writing-skills'

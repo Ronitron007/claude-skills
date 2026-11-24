@@ -521,17 +521,6 @@
       "description": "Use when implementing any feature or bugfix, before writing implementation code"
     },
     {
-      "name": "the-fool",
-      "kind": "skill",
-      "path": "~/.claude/skills/the-fool",
-      "linked_to_claude": true,
-      "class": "cli",
-      "evidence": "in ~/.agents/.skill-lock.json from jeffallan/claude-skills",
-      "source": "https://github.com/jeffallan/claude-skills.git",
-      "skill_path": "skills/the-fool/SKILL.md",
-      "description": "Use when challenging ideas, plans, decisions, or proposals using structured critical reasoning. Invoke to play devil's advocate, run a pre-mortem, red team, or audit evidence and assumptions."
-    },
-    {
       "name": "to-spec",
       "kind": "skill",
       "path": "sources.json",
@@ -1013,6 +1002,18 @@
       "skill_path": ".claude/skills/teach-impeccable/SKILL.md",
       "description": "One-time setup that gathers design context for your project and saves it to your AI config file. Run once to establish persistent design guidelines.",
       "exported_to": "vendored/skills/teach-impeccable"
+    },
+    {
+      "name": "the-fool",
+      "kind": "skill",
+      "path": "~/.claude/skills/the-fool",
+      "linked_to_claude": true,
+      "class": "vendored",
+      "evidence": "in ~/.agents/.skill-lock.json from jeffallan/claude-skills; upstream no longer has skills/the-fool/SKILL.md",
+      "source": "https://github.com/jeffallan/claude-skills.git",
+      "skill_path": "skills/the-fool/SKILL.md",
+      "description": "Use when challenging ideas, plans, decisions, or proposals using structured critical reasoning. Invoke to play devil's advocate, run a pre-mortem, red team, or audit evidence and assumptions.",
+      "exported_to": "vendored/skills/the-fool"
     },
     {
       "name": "turnstile-spin",
